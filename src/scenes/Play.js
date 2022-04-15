@@ -1,7 +1,10 @@
 class Play extends Phaser.Scene {
     constructor() {
         super("playScene");
+        var highscore = 0;
     }
+    
+    
 
     preload() {
         // load images/tile sprites
@@ -53,7 +56,7 @@ class Play extends Phaser.Scene {
         // initialize score
         this.p1Score = 0;
           // display score
-        let scoreConfig = {
+        let playConfig = {
         fontFamily: 'Courier',
         fontSize: '28px',
         backgroundColor: '#F3B141',
@@ -65,19 +68,40 @@ class Play extends Phaser.Scene {
         },
             fixedWidth: 100
         }
-        this.scoreLeft = this.add.text(borderUISize + borderPadding, borderUISize + borderPadding*2, this.p1Score, scoreConfig);
+
+        this.p1Score = 0;
+          // display score
+        let tinyConfig = {
+        fontFamily: 'Courier',
+        fontSize: '12px',
+        backgroundColor: '#F3B141',
+        color: '#843605',
+        align: 'right',
+        padding: {
+            top: 5,
+            bottom: 5,
+        },
+            fixedWidth: 20
+        }
+        this.scoreLeft = this.add.text(borderUISize + borderPadding, borderUISize + borderPadding*2, this.p1Score, playConfig);
         
         // GAME OVER flag
         this.gameOver = false;
 
 
         // 60-second play clock
-        scoreConfig.fixedWidth = 0;
-        this.clock = this.time.delayedCall(game.settings.gameTimer, () => {
-            this.add.text(game.config.width/2, game.config.height/2, 'GAME OVER', scoreConfig).setOrigin(0.5);
-            this.add.text(game.config.width/2, game.config.height/2 + 64, 'Press (R) to Restart or <- for Menu', scoreConfig).setOrigin(0.5);
+        playConfig.fixedWidth = 0;
+        this.clock = this.time.delayedCall(game.settings.gameTimer, () => { // game.settings.gameTimer
+            this.add.text(game.config.width/2, game.config.height/2, 'GAME OVER', playConfig).setOrigin(0.5);
+            this.add.text(game.config.width/2, game.config.height/2 + 64, 'Press (R) to Restart or <- for Menu', playConfig).setOrigin(0.5);
                 this.gameOver = true;
         }, null, this);
+
+        // FIRE UI
+        this.add.text(game.config.width/2, game.config.height/4 - borderUISize -
+             borderPadding, 'FIRE', playConfig).setOrigin(0.5);
+
+        // Initialize highScore
     }
 
     update() {
@@ -88,6 +112,7 @@ class Play extends Phaser.Scene {
         if (this.gameOver && Phaser.Input.Keyboard.JustDown(keyLEFT)) {
             this.scene.start("menuScene");
         }
+        
         if (!this.gameOver) {
             this.starfield.tilePositionX -= 4;
             this.p1Rocket.update();             // update player movement
@@ -109,6 +134,13 @@ class Play extends Phaser.Scene {
             this.p1Rocket.reset();
             this.shipExplode(this.ship01);
         }
+
+               // 30 second speed increase
+       var timer = this.time.delayedCall(30000, () => {
+            if (this.ship01.moveSpeed == game.settings.spaceshipSpeed){
+                this.ship01.moveSpeed += 3; this.ship02.moveSpeed += 3; this.ship03.moveSpeed += 3;
+            }
+        }, null, this);
     }
 
     checkCollision(rocket, ship) {
