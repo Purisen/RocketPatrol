@@ -22,7 +22,16 @@ class Play extends Phaser.Scene {
     create() {
         // place tile sprite
         this.starfield = this.add.tileSprite(0, 0, 640, 480, 'wildwest').setOrigin(0, 0);
-
+        // define keys
+        keyF = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F);
+        keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
+        keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
+        keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
+        // player 2 controls
+        keyA = this.input.keyboard.addKey("A");
+        keyD = this.input.keyboard.addKey("D");
+        keyW = this.input.keyboard.addKey("W");
+        
         // green UI background
         this.add.rectangle(0, borderUISize + borderPadding, game.config.width,
             borderUISize * 2, 0x00FF00).setOrigin(0, 0);
@@ -36,19 +45,18 @@ class Play extends Phaser.Scene {
             0xFFFFFF).setOrigin(0,0);
 
         // add rocket (p1)
-        this.p1Rocket = new Rocket(this, game.config.width/2, game.config.height - borderUISize - borderPadding,
-            'rocket').setOrigin(0.5, 0);
+        this.p1Rocket = new Rocket(this, game.config.width/2+40, game.config.height - borderUISize - borderPadding,
+            'rocket', 0, keyLEFT, keyRIGHT, keyF).setOrigin(0.5, 0);
+        // MODDED add rocket (p2)
+        this.p2Rocket = new Rocket(this, game.config.width/2-40, game.config.height - borderUISize - borderPadding,
+            'rocket', 0, keyA, keyD, keyW).setOrigin(0.5, 0);
         
         // add spaceships (x3)
         this.ship01 = new Spaceship (this, game.config.width + borderUISize*6, borderUISize*4, 'horseman', 0, 30).setOrigin(0, 0);
         this.ship02 = new Spaceship (this, game.config.width + borderUISize*3, borderUISize*5 + borderPadding*2, 'horseman', 0, 20).setOrigin(0, 0);
         this.ship03 = new Spaceship (this, game.config.width, + borderUISize*6 + borderPadding*4, 'horseman', 0, 10).setOrigin(0, 0);
 
-        // define keys
-        keyF = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F);
-        keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
-        keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
-        keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
+
         
 
         // animation config
@@ -120,6 +128,7 @@ class Play extends Phaser.Scene {
         if (!this.gameOver) {
             this.starfield.tilePositionX -= 4;
             this.p1Rocket.update();             // update player movement
+            this.p2Rocket.update();
             this.ship01.update();               // update 3 different ships
             this.ship02.update();
             this.ship03.update();
@@ -136,6 +145,20 @@ class Play extends Phaser.Scene {
         }
         if(this.checkCollision(this.p1Rocket, this.ship01)){
             this.p1Rocket.reset();
+            this.shipExplode(this.ship01);
+        }
+
+        // MODDED check collisions for p2
+        if(this.checkCollision(this.p2Rocket, this.ship03)){
+            this.p2Rocket.reset();
+            this.shipExplode(this.ship03);
+        }
+        if(this.checkCollision(this.p2Rocket, this.ship02)){
+            this.p2Rocket.reset();
+            this.shipExplode(this.ship02);
+        }
+        if(this.checkCollision(this.p2Rocket, this.ship01)){
+            this.p2Rocket.reset();
             this.shipExplode(this.ship01);
         }
 
