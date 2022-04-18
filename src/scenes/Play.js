@@ -8,13 +8,14 @@ class Play extends Phaser.Scene {
 
     preload() {
         // load images/tile sprites
-        this.load.image('rocket', './assets/rocket.png');
-        this.load.image('spaceship', './assets/spaceship.png');
-        this.load.image('starfield', './assets/starfield.png');
+      //  this.load.image('rocket', './assets/rocket.png');
+      //  this.load.image('spaceship', './assets/spaceship.png');
+      //  this.load.image('starfield', './assets/starfield.png');
 
         // ***************MOD ASSETS**********************
         this.load.image('horseman', './assets/horseman.png');
         this.load.image('wildwest', './assets/wildwest.png');
+        this.load.image('bullet', './assets/bullet.png');
         // load spritesheet
         this.load.spritesheet('explosion', './assets/explosion.png', {frameWidth: 64, frameHeight: 32, startFrame: 0, endFrame: 9});
     }
@@ -46,10 +47,10 @@ class Play extends Phaser.Scene {
 
         // add rocket (p1)
         this.p1Rocket = new Rocket(this, game.config.width/2+40, game.config.height - borderUISize - borderPadding,
-            'rocket', 0, keyLEFT, keyRIGHT, keyF).setOrigin(0.5, 0);
+            'bullet', 0, keyLEFT, keyRIGHT, keyF).setOrigin(0.5, 0);
         // MODDED add rocket (p2)
         this.p2Rocket = new Rocket(this, game.config.width/2-40, game.config.height - borderUISize - borderPadding,
-            'rocket', 0, keyA, keyD, keyW).setOrigin(0.5, 0);
+            'bullet', 0, keyA, keyD, keyW).setOrigin(0.5, 0);
         
         // add spaceships (x3)
         this.ship01 = new Spaceship (this, game.config.width + borderUISize*6, borderUISize*4, 'horseman', 0, 30).setOrigin(0, 0);
